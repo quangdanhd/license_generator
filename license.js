@@ -1,4 +1,5 @@
 const read = require("read-file");
+const write = require("write");
 const CryptoJS = require("crypto-js");
 
 licenseGenerator().then();
@@ -19,30 +20,37 @@ async function licenseGenerator() {
         console.log("Private key not found.");
         return;
       }
-      if (typeof env["LICENSE_LIFETIME"] == "undefined") {
+      if (typeof env["LICENSE_LIFETIME_KEY"] == "undefined") {
         console.log("License lifetime not found.");
         return;
       }
       // env variables
       const privateKey = env["LICENSE_PRIVATE_KEY"];
-      const lifetime = env["LICENSE_LIFETIME"];
-      // expires time
-      let exp = getExpiresTime(variables["type"], lifetime);
+      const lifetimeKey = env["LICENSE_LIFETIME_KEY"];
       // license key
       const licenseKey = generatingLicenseKey();
-      // expires time encrypt
-      exp = encrypt(exp, privateKey);
-      console.log({
-        code: licenseKey,
-        exp: exp,
+      // license time
+      const licenseTime = getLicenseTime(variables["type"], lifetimeKey);
+      // expires time
+      const now = new Date(new Date().toUTCString());
+      const exp = new Date(now.setMinutes(now.getMinutes() + 5)).getTime();
+      // key
+      console.log({ key: licenseKey });
+      const json = {
+        code: encrypt(licenseKey, privateKey),
+        license_time: encrypt(licenseTime, privateKey),
+        exp: encrypt(exp, privateKey),
+      };
+      // project
+      const project = variables["project"];
+      write.sync(`${project}/license.txt`, JSON.stringify(json), {
+        overwrite: true,
       });
     },
     function (error) {
       console.log(error.message);
     }
   );
-  // // project
-  // const project = variables["project"];
 }
 
 function getVariables() {
@@ -81,7 +89,7 @@ async function getEnv() {
     });
   });
 }
-function getExpiresTime(type, lifetime) {
+function getLicenseTime(type, lifetimeKey) {
   let exp = null;
   const now = new Date(new Date().toUTCString());
   // type
@@ -99,7 +107,7 @@ function getExpiresTime(type, lifetime) {
       exp = new Date(now.setFullYear(now.getFullYear() + 1)).getTime();
       break;
     case "lifetime":
-      exp = lifetime;
+      exp = lifetimeKey;
       break;
     default:
       break;
