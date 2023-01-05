@@ -34,8 +34,15 @@ async function licenseGenerator() {
       // expires time
       const now = new Date(new Date().toUTCString());
       const exp = new Date(now.setMinutes(now.getMinutes() + 5)).getTime();
+      let expStr = new Date(exp);
+      expStr =
+        expStr.getHours() +
+        ":" +
+        expStr.getMinutes() +
+        ":" +
+        expStr.getSeconds();
       // key
-      console.log({ key: licenseKey });
+      console.log({ key: licenseKey, expiresAt: expStr });
       const json = {
         code: encrypt(licenseKey, privateKey),
         license_time: encrypt(licenseTime, privateKey),
