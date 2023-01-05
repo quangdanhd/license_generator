@@ -9,7 +9,8 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "husky": "^8.0.0"
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "read-file": "^0.2.0"
   }
 }
