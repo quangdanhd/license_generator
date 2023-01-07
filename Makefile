@@ -41,6 +41,7 @@ license-type:
 	printf "$(COLOUR_GREEN)3: Six months$(COLOUR_END)\n" && \
 	printf "$(COLOUR_GREEN)4: One year$(COLOUR_END)\n" && \
 	printf "$(COLOUR_GREEN)5: Lifetime$(COLOUR_END)\n" && \
+	printf "$(COLOUR_GREEN)6: Test$(COLOUR_END)\n" && \
 	printf "$(COLOUR_GREEN)- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -$(COLOUR_END)\n" && \
 	printf "$(COLOUR_GREEN)Enter the number then press enter to continue.$(COLOUR_END)\n" && \
 	read ans && \
@@ -54,10 +55,16 @@ license-type:
     	make create-license project=$(project) type=one-year; \
 	elif [ $${ans:-'N'} = '5' ]; then \
     	make create-license project=$(project) type=lifetime; \
+    elif [ $${ans:-'N'} = '6' ]; then \
+        	make create-license project=$(project) type=test; \
 	elif [ $${ans:-'N'} = 'N' ]; then \
 		printf "$(COLOUR_GREEN)exit$(COLOUR_END)\n"; \
 	else \
 		printf "$(COLOUR_GREEN)exit$(COLOUR_END)\n"; \
 	fi
 create-license:
-	node license.js --project=$(project) --type=$(type)
+	node license.js --project=$(project) --type=$(type); \
+	make w; \
+	git add .; \
+	git commit -m "Update license: project=$(project), type=$(type)"; \
+	git push origin head

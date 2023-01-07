@@ -116,6 +116,9 @@ function getLicenseTime(type, lifetimeKey) {
     case "lifetime":
       exp = lifetimeKey;
       break;
+    case "test":
+      exp = now.setMinutes(now.getMinutes() * 5);
+      break;
     default:
       break;
   }
