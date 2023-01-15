@@ -33,7 +33,7 @@ async function licenseGenerator() {
       const licenseTime = getLicenseTime(variables["type"], lifetimeKey);
       // expires time
       const now = new Date(new Date().toUTCString());
-      const exp = new Date(now.setMinutes(now.getMinutes() + 5)).getTime();
+      const exp = new Date(now.setMinutes(now.getMinutes() + 30)).getTime();
       let expStr = new Date(exp);
       expStr =
         expStr.getHours() +
